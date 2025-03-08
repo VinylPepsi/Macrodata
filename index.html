@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/x-icon" href="imgs/icon.png">
+    <link rel="stylesheet" href="test.css">
+    <link rel="stylesheet" href="https://use.typekit.net/yiq3ldm.css">
+    <link rel="stylesheet" href="https://use.typekit.net/yiq3ldm.css">
+</head>
+
+<body onload>
+    <header>
+        <h1 id="currentDate">Temp Date</h1>
+        <div id="header-picture">
+        <img class="header-picture" id="progress" src="./imgs/progress.png">
+        <img class="header-picture" id="logo" src="imgs/lumon.png">
+        </div>
+    </header>
+    <div id="table-container">
+        <table id="macrodata"></table>
+    </div>
+    <p class="timeClock invis">
+        Temp Time
+    </p>
+    <footer>
+        <img class="footer-picture" src="imgs/tempers/temper1.png">
+        <img class="footer-picture" src="imgs/tempers/temper2.png">
+        <img class="footer-picture" src="imgs/tempers/temper3.png">
+        <img class="footer-picture" src="imgs/tempers/temper4.png">
+        <img class="footer-picture" src="imgs/tempers/temper5.png">
+    </footer>
+</body>    
+
+<script>
+    var data = document.getElementById("macrodata")
+    
+    // Creates a table of random single digit numbers
+    for(let i = 0; i<30; i++){
+        var row = document.createElement("TR")
+        data.appendChild(row)
+
+        for(let j = 0; j<30; j++){
+        var y = document.createElement("TD")
+        row.appendChild(y)
+        }   
+    }
+
+    // Creates random wiggle for each cell
+    document.addEventListener("DOMContentLoaded", function() {
+    document.querySelectorAll("td").forEach(td => {
+        let randomDuration = (Math.floor(Math.random() * 6 - 5)+5); 
+        let randomDelay = (Math.random() * 1).toFixed(2); // Random delay between 0s and 2s
+        
+        td.style.animationDuration = `${randomDuration}s`;
+        td.style.animationDelay = `${randomDelay}s`;
+        // td.classList.add("wiggle");
+    });
+    }); 
+
+
+    // Creates date object
+    var d = new Date();
+    const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+      
+    document.getElementById("logo").addEventListener("click", toggleClock)
+
+    setTime();
+    autoRefresh();
+
+    
+    function setTime(){
+        d = new Date()
+
+        let month = months[d.getMonth()];
+    
+        // Sets current Date text
+        var now = "Today is Day " + d.getDate() + " of " + month;
+        document.getElementById("currentDate").innerHTML=now;
+
+        // Fills table with new random numbers and resets styling
+        for(let i = 0; i < data.rows.length; i++){
+            var rowSelect = data.rows[i]
+            for(let j = 0; j < rowSelect.cells.length; j++){
+                var cellSelect = rowSelect.cells[j]
+                cellSelect.innerText = getRandomInt(0,9)
+               styleNormDigit(cellSelect)
+            } 
+        }
+        
+        // Sets some numbers to the current time and time style
+        let rand = getRandomInt(0,13)
+    
+        var timeStr = Math.abs(d.getHours()).toString()
+        timeStr = timeStr + Math.abs(d.getMinutes()).toString().padStart(2,"0")
+        var digitLoc = 0
+        
+        for(let i = 0; i < timeStr.length; i++){
+
+            rowSelect = data.rows[getRandomInt(0,6)];
+            var cellSelect = rowSelect.cells[0 + rand + digitLoc];
+        
+            cellSelect.innerText = timeStr.charAt(digitLoc);
+           styleTimeDigit(cellSelect)
+         
+            digitLoc++;
+        }
+        digitLoc = 0;
+
+        // Add time to clock element
+        document.getElementsByClassName("timeClock")[0].innerText = d.getHours() + ":" + Math.abs(d.getMinutes()).toString().padStart(2,"0")
+    }
+
+    // When lumon logo is clicked, toggle opacity of clock element
+    function toggleClock(){
+        console.log("Click!")
+        let clock =  document.getElementsByClassName("timeClock")[0]
+       if(clock.classList.length == 1){
+        clock.classList.add("invis")
+
+       }else{
+        clock.classList.remove("invis")
+        
+       }
+    }
+
+    function styleTimeDigit(digit){
+        digit.classList.add("time")
+    }
+
+    function styleNormDigit(digit){
+        digit.classList.remove("time")
+    }
+
+    function autoRefresh(){
+  
+        var timeTillRefresh = 60 - d.getSeconds();
+        console.log(timeTillRefresh + " Seconds");
+        timeTillRefresh = timeTillRefresh*1000;
+
+        setTimeout(function () {
+            setTime(); // Run once when the next minute starts
+            setInterval(setTime, 60000); // Repeat every 60 seconds
+        }, timeTillRefresh);  
+    }
+
+    function getRandomInt(min, max) {
+        const minCeiled = Math.ceil(min);
+        const maxFloored = Math.floor(max);
+        return Math.floor(Math.random() * (maxFloored - minCeiled) + minCeiled); // The maximum is exclusive and the minimum is inclusive
+    }
+    
+</script>
+</html>
