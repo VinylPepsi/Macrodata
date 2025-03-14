@@ -66,6 +66,9 @@
     setTime();
     autoRefresh();
 
+    if (getUrlParameter("show") === "true") {
+            document.getElementsByClassName("timeClock")[0].classList.remove("invis");
+        }
     
     function setTime(){
         d = new Date()
@@ -108,6 +111,11 @@
         // Add time to clock element
         document.getElementsByClassName("timeClock")[0].innerText = d.getHours() + ":" + Math.abs(d.getMinutes()).toString().padStart(2,"0")
     }
+
+    function getUrlParameter(name) {
+            var urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name);
+        }
 
     // When lumon logo is clicked, toggle opacity of clock element
     function toggleClock(){
